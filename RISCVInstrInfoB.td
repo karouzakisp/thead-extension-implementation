@@ -32,14 +32,22 @@ class addsl_ir<bits<7> imm7,string opcodestr> // TODO ADD RISCVOpcode
 
 
 let hasSideEffects = 0, mayLoad = 0, mayStore = 0 in
-class sign_extend_ir<bits<7> funct7, string opcodestr>
-    : th_ext<funct7, opcode, (outs GPR:$rd),
+class ext_ir<bits<7> funct7, string opcodestr>
+    : ext<funct7, opcode, (outs GPR:$rd),
     (ins GPR:$rs1, uimm6:$imm1, uimm6:$imm2), opcodestr,
-    "$rd, $rs1, $imm1, $imm2">"
+    "$rd, $rs1, $imm1, $imm2">
+
+let hasSideEffects = 0, mayLoad = 0, mayStore = 0 in
+class extu_ir<bits<7> funct7, string opcodestr>
+  : extu<funct7, opcode, (outs GPR:$rd),
+  (ins GPR:$rs1, uimm6:$imm1, uimm6:$imm2), opcodestr,
+  "$rd, $rs1, $imm1, $imm2">
 
 def ADDSL : addsl_ir<0b0000001, "addsl">
 
-def SIGNEXTEND : sign_extend_ir<0b0000010, "th_ext"> 
+def EXT : ext_ir<0b0000010, "ext"> 
+
+def EXTU : extu_ir<0b0000011, "extu">
 
 // Predicates
 
@@ -47,4 +55,6 @@ def SIGNEXTEND : sign_extend_ir<0b0000010, "th_ext">
 
 def Pat<(add GPR:$rs1, (shl GPR:$rs2, uimm2:$imm) ) , ADDSL>
 
-def Pat<
+def Pat<(i64 (sext GPR32:$src) ) , EXT>
+
+def PAT<(i64 (zext GPR32:$src) ), EXTU>
