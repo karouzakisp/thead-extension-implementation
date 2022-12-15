@@ -52,5 +52,6 @@ def Pat<(add GPR:$rs1, (shl GPR:$rs2, uimm2:$imm) ) , ADDSL>
 
 
 // add for each loop to generate multiple patterns
-def Pat<(ashr i64 (GPR:$rs1, (shl i64 GPR:rs1, 1, 1 ) , EXT>
+foreach i = 0..63 in 
+def Pat<(ashr i64 (GPR:$rs1, (shl i64 GPR:rs1, i), i ) , EXT>
 
