@@ -37,17 +37,12 @@ class ext_ir<bits<7> funct7, string opcodestr>
     (ins GPR:$rs1, uimm6:$imm1, uimm6:$imm2), opcodestr,
     "$rd, $rs1, $imm1, $imm2">
 
-let hasSideEffects = 0, mayLoad = 0, mayStore = 0 in
-class extu_ir<bits<7> funct7, string opcodestr>
-  : extu<funct7, opcode, (outs GPR:$rd),
-  (ins GPR:$rs1, uimm6:$imm1, uimm6:$imm2), opcodestr,
-  "$rd, $rs1, $imm1, $imm2">
 
 def ADDSL : addsl_ir<0b0000001, "addsl">
 
 def EXT : ext_ir<0b0000010, "ext"> 
 
-def EXTU : extu_ir<0b0000011, "extu">
+def EXTU : ext_ir<0b0000011, "extu">
 
 // Predicates
 
@@ -55,6 +50,7 @@ def EXTU : extu_ir<0b0000011, "extu">
 
 def Pat<(add GPR:$rs1, (shl GPR:$rs2, uimm2:$imm) ) , ADDSL>
 
-def Pat<(i64 (sext GPR32:$src) ) , EXT>
 
-def PAT<(i64 (zext GPR32:$src) ), EXTU>
+// add for each loop to generate multiple patterns
+def Pat<(ashr i64 (GPR:$rs1, (shl i64 GPR:rs1, 1, 1 ) , EXT>
+
