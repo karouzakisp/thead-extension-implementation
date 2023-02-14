@@ -50,6 +50,7 @@ class rev_ir<bits<5> funct5, bits<2> funct2, string opcodestr>
   def FF0 : rev_ir<0b100, "ff0">;
   def FF1 : rev_ir<0b101, "ff1">;
   def REV : rev_ir<0b110, "rev">;
+  def REVW : rev_ir<0b111, "rev">;
   
 
   def : Pat<(add GPR:$rs1, (shl GPR:$rs2, uimm2_node:$uimm2) ) ,
@@ -72,4 +73,12 @@ class rev_ir<bits<5> funct5, bits<2> funct2, string opcodestr>
   def : Pat<(ctlz (xor GPR:$rs1, 1), FF0 GPr:$rs0 )>;
      
   def : Pat<(bswap GPR:$rs1, REV GPR:$rs1 ) >;
- 
+
+// which one ?? 1's at the start or 0's ??
+  def : Pat<(srl (bswap GPR:$rs1), (i64 32) , REVW GPR:$rs1 )>;
+
+  def : Pat<(sra (bswap GPR:$rs1), (i64 32) , REVW GPR:$rs1 )>;
+
+  
+
+
